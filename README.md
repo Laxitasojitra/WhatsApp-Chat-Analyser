@@ -30,6 +30,4 @@ This file contains a preprocessing function `preprocess(data)` to clean and orga
 - `app.py`: Main Streamlit application code.
 - `preprocessor.py`: Preprocessing functions for WhatsApp chat data.
 - `helper.py`: Helper functions for analysis and visualization.
-  
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
