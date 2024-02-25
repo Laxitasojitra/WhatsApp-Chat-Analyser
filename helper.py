@@ -2,7 +2,9 @@ from urlextract import URLExtract
 from wordcloud import WordCloud
 import pandas as pd
 from collections import Counter
+from textblob import TextBlob
 import emoji
+import regex
 import re
 extract = URLExtract()
 def fetch_stats(selected_user, df):
@@ -83,14 +85,7 @@ def emoji_helper(selected_user,df):
         df = df[df['user'] == selected_user]
 
     emojis = []
-    emoji_pattern = re.compile("["
-                               u"\U0001F600-\U0001F64F"  # emoticons
-                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                               u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                               u"\U00002702-\U000027B0"
-                               u"\U000024C2-\U0001F251"
-                               "]+", flags=re.UNICODE)
+    emoji_pattern = regex.compile(r'\p{So}')
     for message in df['message']:
         emojis.extend(emoji_pattern.findall(message))
 
@@ -145,7 +140,26 @@ def activity_heatmap(selected_user,df):
 
     return user_heatmap
 
+def analyze_sentiment(message):
+    blob = TextBlob(message)
+    sentiment_score = blob.sentiment.polarity
+    if sentiment_score > 0:
+        return "Positive"
+    elif sentiment_score < 0:
+        return "Negative"
+    else:
+        return "Neutral"
 
+def word_frequency_by_user(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['user'] == selected_user]
+
+    words = []
+    for message in df['message']:
+        words.extend(message.lower().split())
+
+    word_counts = Counter(words)
+    return pd.DataFrame(word_counts.most_common(20), columns=['Word', 'Frequency'])
 
 
 
