@@ -113,16 +113,18 @@ if uploaded_file is not None:
         st.title('Most common words')
         st.pyplot(fig)
 
-        # Sentiment Analysis Results
+         # Sentiment Analysis Results
         st.title("Sentiment Analysis")
 
-        if selected_user == 'Overall':
+        if selected_user == "Overall":
             st.write("Sentiment distribution across all users:")
+            sentiment_counts = df["sentiment"].value_counts()
+            st.bar_chart(sentiment_counts)
         else:
             st.write(f"Sentiment distribution for user: {selected_user}")
-
-        sentiment_counts = df['sentiment'].value_counts()
-        st.bar_chart(sentiment_counts)
+            df = df[df["user"] == selected_user]
+            sentiment_counts = df["sentiment"].value_counts()
+            st.bar_chart(sentiment_counts)
 
         # Sentiment Distribution by User
         if selected_user == 'Overall':
