@@ -137,15 +137,17 @@ if uploaded_file is not None:
         emoji_df = emoji_df[emoji_df[0] != 'group_notification']  # Remove 'group_notification'
         st.title("Emoji Analysis")
 
-        col1, col2 = st.columns(2)
-
-        with col1:
+        # Display emoji list
+        with st.expander("Emoji List"):
             st.dataframe(emoji_df)
-        with col2:
-            fig, ax = plt.subplots()
-            ax.bar(emoji_df[0].head(), emoji_df[1].head(), color='skyblue')
-            plt.xticks(rotation=45, ha='right')
-            st.pyplot(fig)
+
+        # Aggregate emojis by category or frequency
+        aggregated_data = emoji_df.groupby(0)[1].sum().nlargest(5)  # Example: Top 5 most frequent emojis
+
+        # Plot aggregated data using Plotly
+        fig = go.Figure(data=[go.Bar(x=aggregated_data.index, y=aggregated_data.values)])
+        fig.update_layout(xaxis_title="Emoji", yaxis_title="Frequency")
+        st.plotly_chart(fig)
 
         # Word Frequency by User
         st.title("Word Frequency by User")
